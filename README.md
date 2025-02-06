@@ -82,5 +82,5 @@ pip install -r requirements.txt
 ## :handshake: Team - Bug Slayers (2924BN)
 Nimish - 22MIC0112 <br>
 Vaibhavi - 22MIC0046 <br>
-
+Maneet Gupta - 24BBS0101
 
