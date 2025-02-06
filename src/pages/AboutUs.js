@@ -87,52 +87,55 @@ const NeuroVerseAboutUs = () => {
     <div className="bg-gray-100 min-h-screen">
       <div className="bg-[#112d4e] text-white py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-6 text-white">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-6 text-white font-orbitron">
             {typedTitle}
             <span className="animate-ping">|</span>
           </h1>
-          <p className="text-xl sm:text-2xl max-w-3xl mx-auto text-gray-200">
+          <p className="text-xl sm:text-2xl max-w-3xl mx-auto text-gray-200 font-smooch">
             No judgment, just understanding. NeuroVerse listens
           </p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-10 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
           <div className="col-span-1">
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#001F3F] mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#001F3F] mb-6 font-orbitron">
               Our Mission
             </h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-black-700 font-bold mb-6 font-smooch">
               NeuroVerse is revolutionizing mental health support by creating an
               immersive, empathetic environment where individuals can share
               their feelings without hesitation.
             </p>
             <button
               onClick={() => setIsDialogOpen(true)}
-              className="bg-[#3F72AF] text-white px-6 py-3 rounded-full hover:bg-opacity-90 transition-colors"
+              className="bg-[#3F72AF] text-white px-6 py-3 rounded-full hover:bg-opacity-90 transition-colors font-lilita"
             >
               Watch Our Story
             </button>
           </div>
 
           <div className="flex flex-col sm:flex-row space-x-4 overflow-x-auto pb-4 col-span-2 justify-center sm:justify-end">
-  {challengeItems.map((item, index) => (
-    <div
-      key={index}
-      className="w-[90vw] sm:w-[300px] flex flex-col bg-white shadow-lg rounded-lg p-6 flex-shrink-0 justify-center items-center py-10 group relative overflow-hidden mb-4 sm:mb-0"
-    >
-      <div className="flex items-center space-x-4 mb-4">
-        <div className="transform group-hover:scale-125 transition-transform duration-300">
-          {item.icon}
-        </div>
-      </div>
-      <h3 className="text-xl sm:text-2xl font-semibold mb-4">{item.title}</h3>
-      <p className="text-gray-600">{item.description}</p>
-    </div>
-  ))}
-</div>
-
+            {challengeItems.map((item, index) => (
+              <div
+                key={index}
+                className="w-[90vw] sm:w-[300px] flex flex-col bg-white shadow-lg rounded-lg p-6 flex-shrink-0 justify-center items-center py-10 group relative overflow-hidden mb-4 sm:mb-0"
+              >
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="transform group-hover:scale-125 transition-transform duration-300">
+                    {item.icon}
+                  </div>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-semibold mb-4 font-smooch">
+                  {item.title}
+                </h3>
+                <p className="text-gray-600 text-[0.9rem] font-orbitron">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -145,7 +148,7 @@ const NeuroVerseAboutUs = () => {
             >
               &times;
             </button>
-            <h2 className="text-2xl font-bold mb-4">
+            <h2 className="text-2xl font-bold mb-4 font-orbitron">
               NeuroVerse: No judgment, just understanding
             </h2>
             <div className="aspect-video bg-gray-200 flex items-center justify-center"></div>
@@ -153,9 +156,9 @@ const NeuroVerseAboutUs = () => {
         </div>
       )}
 
-      <div className="bg-gradient-to-r from-[#3F72AF] to-[#213555] text-white py-16 pb-32">
+      <div className="bg-gradient-to-r from-[#3F72AF] to-[#213555] text-white pt-16 pb-12 pb-32">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 font-orbitron">
             Advanced Features
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -165,8 +168,12 @@ const NeuroVerseAboutUs = () => {
                 className="bg-white/10 backdrop-blur-lg p-6 rounded-lg text-center hover:bg-white/20 transition-all duration-300 transform hover:-translate-y-2"
               >
                 <div className="flex justify-center mb-4">{feature.icon}</div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-4">{feature.title}</h3>
-                <p className="text-gray-200">{feature.description}</p>
+                <h3 className="text-xl sm:text-2xl font-semibold mb-4 font-orbitron">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-200 text-[1.2rem] font-smooch">
+                  {feature.description}
+                </p>
               </div>
             ))}
           </div>

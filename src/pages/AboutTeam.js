@@ -13,7 +13,7 @@ const cards = [
   {
     id: 2,
     name: "Vaibhavi",
-    designation: "Frontend Developer",
+    designation: "Frontend Developer | Designer",
     photo: founder2,
   },
   {
@@ -31,7 +31,7 @@ const AboutTeam = () => {
   return (
     <div className="bg-gray-100 py-12 h-[calc(100vh-(90px+60px))]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#001F3F] text-center mb-12">
+        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#001F3F] text-center mb-12 font-orbitron">
           Our Team
         </h2>
 
@@ -69,10 +69,10 @@ const AboutTeam = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">
+                <h3 className="text-2xl font-bold text-white mb-2 font-orbitron">
                   {card.name}
                 </h3>
-                <p className="text-sm text-green-100">{card.designation}</p>
+                <p className="text-lg text-green-100 font-smooch">{card.designation}</p>
                 <div
                   className={`mt-4 transition-all duration-300 ${
                     hoveredCard === index ? "opacity-100" : "opacity-0"

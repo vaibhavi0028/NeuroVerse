@@ -19,6 +19,8 @@ const Landing = () => {
       navigate("/dashboard");
     }, 100);
   };
+
+  
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -45,7 +47,9 @@ const Landing = () => {
   }, []);
 
   const rowConfigs = [17, 16, 17, 16, 17, 16, 17, 16, 17];
-  const titleText = "No judgment, just understanding. NeuroVerse listens";
+  const calculateDistance = (hexX, hexY) => {
+    return Math.hypot(mousePosition.x - hexX, mousePosition.y - hexY);
+  };
 
   useEffect(() => {
     let timeout;
@@ -57,7 +61,7 @@ const Landing = () => {
       } else {
         timeout = setTimeout(() => {
           setIsTypingForward(false);
-        }, 20);
+        }, 2000); 
       }
     } else {
       if (typedTitle.length > 0) {
@@ -68,13 +72,11 @@ const Landing = () => {
         setIsTypingForward(true);
       }
     }
-
+  
     return () => clearTimeout(timeout);
   }, [typedTitle, isTypingForward]);
-
-  const calculateDistance = (hexX, hexY) => {
-    return Math.hypot(mousePosition.x - hexX, mousePosition.y - hexY);
-  };
+  
+  const titleText = "No judgment, just understanding. NeuroVerse listens";
   const features = [
     {
       icon: ClipboardList,
@@ -177,7 +179,7 @@ const Landing = () => {
           ))}
         </div>
 
-        <div className="relative z-10 container mx-auto px-6 h-full flex flex-col lg:flex-row items-center justify-between">
+        <div className="relative z-10 container mx-auto px-16 h-full flex flex-col lg:flex-row items-center justify-between">
           <div className="w-full lg:w-1/2 text-center lg:text-left mb-8 lg:mb-0 flex flex-col justify-center">
             <motion.div className="flex flex-wrap justify-center lg:justify-start space-x-2 font-neuroverse">
               {"NeuroVerse".split("").map((char, index) => (
