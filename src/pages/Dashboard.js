@@ -10,21 +10,21 @@ const Loader = () => {
         <div
           className="w-3 h-3 rounded-full animate-bounce"
           style={{
-            backgroundColor: "#ba5b38",
+            backgroundColor: "#213555",
             animationDelay: "0ms",
           }}
         ></div>
         <div
           className="w-3 h-3 rounded-full animate-bounce"
           style={{
-            backgroundColor: "#ba5b38",
+            backgroundColor: "#213575",
             animationDelay: "100ms",
           }}
         ></div>
         <div
           className="w-3 h-3 rounded-full animate-bounce"
           style={{
-            backgroundColor: "#ba5b38",
+            backgroundColor: "#213595",
             animationDelay: "200ms",
           }}
         ></div>
@@ -44,7 +44,7 @@ const Waveform = ({ isRecording, small = false }) => {
       {[...Array(bars)].map((_, i) => (
         <motion.div
           key={i}
-          className={`${small ? "w-0.5" : "w-1"} bg-[#FF7F3E]`}
+          className={`${small ? "w-0.5" : "w-1"} bg-[#4335A7]`}
           animate={{
             height: isRecording
               ? [small ? 10 : 20, small ? 20 : 40, small ? 10 : 20]
@@ -108,7 +108,7 @@ const TypingMessage = ({ text, onComplete }) => {
       const timer = setTimeout(() => {
         setDisplayText((prev) => prev + text[currentIndex]);
         setCurrentIndex(currentIndex + 1);
-      }, 50);
+      }, 20);
       return () => clearTimeout(timer);
     } else {
       onComplete?.();
@@ -129,6 +129,7 @@ const Dashboard = () => {
   const messagesContainerRef = useRef(null);
   const recognitionRef = useRef(null);
   const [randomQuote, setRandomQuote] = useState(null);
+  
 
   const quotes = [
     {
@@ -329,7 +330,7 @@ const Dashboard = () => {
                           },
                         },
                       ]);
-                    }, 1000);
+                    }, 200);
                   }
                 },
               }
@@ -429,6 +430,7 @@ const Dashboard = () => {
           ))}
           <div ref={messagesEndRef} />
         </div>
+        
         <div className="w-full mx-auto bg-white rounded-lg p-5 flex items-center gap-3 mt-4 shadow-lg border border-gray-300">
           <button
             onClick={() => {
@@ -440,8 +442,8 @@ const Dashboard = () => {
             }}
             className={`p-2 ${
               isRecording
-                ? "text-[#FF7F3E] animate-pulse"
-                : "text-gray-600 hover:text-[#FF7F3E]"
+                ? "text-[#4335A7] animate-pulse"
+                : "text-gray-600 hover:text-[#4335A7]"
             }`}
           >
             {isRecording ? <FaStop size={24} /> : <FaMicrophone size={24} />}
@@ -469,7 +471,7 @@ const Dashboard = () => {
             disabled={!inputText.trim()}
             className={`p-2 rounded ${
               inputText.trim()
-                ? "text-[#FF7F3E] hover:text-[#FEEE91]"
+                ? "text-[#4335A7] hover:text-[#4335A7]"
                 : "text-gray-400"
             }`}
           >

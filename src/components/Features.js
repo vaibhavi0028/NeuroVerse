@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import Cover1 from "../assets/cover1.png";
 import Char1 from "../assets/img1.png";
 import Cover2 from "../assets/cover2.png";
@@ -16,8 +16,8 @@ const cards = [
 const Features = () => {
   return (
     <section className="flex flex-col items-center py-16">
-      <motion.h2 
-        className="text-3xl md:text-4xl font-bold text-[#983f1f] text-center mb-10"
+      <motion.h2
+        className="text-4xl md:text-6xl font-bold text-[#87ceeb] text-center mb-2"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -25,7 +25,7 @@ const Features = () => {
         Our Features
       </motion.h2>
 
-      <div className="flex flex-wrap justify-center gap-12">
+      <div className="flex flex-wrap justify-center gap-28">
         {cards.map((card, index) => (
           <a href="/" key={index} className="w-full sm:w-[280px] md:w-[320px]">
             <div className="card">
@@ -40,7 +40,7 @@ const Features = () => {
 
       <style jsx global>{`
         :root {
-          --card-height: 500px;
+          --card-height: 600px;
           --card-width: calc(var(--card-height) / 1.5);
         }
         .card {
@@ -52,7 +52,7 @@ const Features = () => {
           align-items: center;
           padding: 0 24px;
           perspective: 2000px;
-          margin: 0 20px;
+          margin: 0 auto;
           border-radius: 5px;
         }
         .cover-image {

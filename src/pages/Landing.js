@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import Features from "../components/Features";
+// import Features from "../components/Features";
+import { ClipboardList, HeartHandshake, Frown } from "lucide-react";
 import docImage from "../assets/doc.png";
 
 const Landing = () => {
   const navigate = useNavigate();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [typedTitle, setTypedTitle] = useState("");
+  const [isTypingForward, setIsTypingForward] = useState(true);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 0
   );
   const handleClick = () => {
     setTimeout(() => {
       navigate("/dashboard");
-    }, 3000);
+    }, 100);
   };
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -42,21 +45,81 @@ const Landing = () => {
   }, []);
 
   const rowConfigs = [17, 16, 17, 16, 17, 16, 17, 16, 17];
+  const titleText = "No judgment, just understanding. NeuroVerse listens";
+
+  useEffect(() => {
+    let timeout;
+    if (isTypingForward) {
+      if (typedTitle.length < titleText.length) {
+        timeout = setTimeout(() => {
+          setTypedTitle(titleText.slice(0, typedTitle.length + 1));
+        }, 20);
+      } else {
+        timeout = setTimeout(() => {
+          setIsTypingForward(false);
+        }, 20);
+      }
+    } else {
+      if (typedTitle.length > 0) {
+        timeout = setTimeout(() => {
+          setTypedTitle(typedTitle.slice(0, -1));
+        }, 20);
+      } else {
+        setIsTypingForward(true);
+      }
+    }
+
+    return () => clearTimeout(timeout);
+  }, [typedTitle, isTypingForward]);
 
   const calculateDistance = (hexX, hexY) => {
     return Math.hypot(mousePosition.x - hexX, mousePosition.y - hexY);
   };
+  const features = [
+    {
+      icon: ClipboardList,
+      title: "Mental Health Assessment",
+      description:
+        "Get personalized insights into your mental well-being through our comprehensive assessment tools.",
+      bgColor: "#112D4E",
+      textColor: "text-white",
+      detdesc:
+        "Our mental health assessment tools offer a thorough analysis of your mental well-being, providing you with a comprehensive understanding of your emotional state. Through easy-to-use questionnaires and real-time tracking, we help identify areas of concern and suggest personalized recommendations for improving mental health.",
+    },
+    {
+      icon: HeartHandshake,
+      title: "Emotional Support",
+      description:
+        "Access a supportive community and professional resources for emotional guidance.",
+      bgColor: "#112D4E",
+      textColor: "text-white",
+      detdesc:
+        "Emotional support is crucial to maintaining mental well-being. Our platform connects you with a caring community where you can share your feelings, experiences, and receive support. You’ll also have access to certified professionals who provide guidance and resources for navigating emotional challenges.",
+    },
+    {
+      icon: Frown,
+      title: "Stress Management",
+      description:
+        "Learn effective strategies to manage stress and build resilience using virtual assistant.",
+      bgColor: "#112D4E",
+      textColor: "text-white",
+      detdesc:
+        "Stress is an unavoidable part of life, but with the right techniques, you can manage it effectively. Our virtual assistant offers tools and personalized advice to help you manage stress. Whether it’s mindfulness exercises, breathing techniques, or time management tips, we provide strategies to build resilience and improve your overall mental health.",
+    },
+  ];
+
+  const [expandedIndex, setExpandedIndex] = useState(null);
 
   const getTitleClasses = () => {
-    let baseClasses = "font-bold text-[#983f1f]";
-    if (windowWidth >= 1024) return `${baseClasses} text-6xl`;
-    if (windowWidth >= 768) return `${baseClasses} text-5xl`;
-    if (windowWidth >= 640) return `${baseClasses} text-4xl`;
+    let baseClasses = "font-extrabold text-[#112d4e]";
+    if (windowWidth >= 1024) return `${baseClasses} text-7xl`;
+    if (windowWidth >= 768) return `${baseClasses} text-6xl`;
+    if (windowWidth >= 640) return `${baseClasses} text-5xl`;
     return `${baseClasses} text-3xl`;
   };
 
   const getTaglineClasses = () => {
-    let baseClasses = "mt-4 text-[#ba5b38] font-bold";
+    let baseClasses = "mt-4 text-[#213555] font-xl font-orbitron";
     if (windowWidth >= 1024) return `${baseClasses} text-2xl`;
     if (windowWidth >= 768) return `${baseClasses} text-xl`;
     return `${baseClasses} text-lg`;
@@ -80,7 +143,7 @@ const Landing = () => {
         </AnimatePresence>
 
         <div
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0 opacity-40"
           style={{ transform: "translateX(-50px) translateY(-100px)" }}
         >
           {rowConfigs.map((hexCount, rowIndex) => (
@@ -104,8 +167,7 @@ const Landing = () => {
                     key={`${rowIndex}-${colIndex}`}
                     className="hexagon"
                     animate={{
-                      backgroundColor:
-                        distance < 200 ? "#f5891d" : "#e6e4da82",
+                      backgroundColor: distance < 200 ? "#133E87" : "#e6e4da",
                     }}
                     transition={{ duration: 0.1 }}
                   />
@@ -117,7 +179,7 @@ const Landing = () => {
 
         <div className="relative z-10 container mx-auto px-6 h-full flex flex-col lg:flex-row items-center justify-between">
           <div className="w-full lg:w-1/2 text-center lg:text-left mb-8 lg:mb-0 flex flex-col justify-center">
-            <motion.div className="flex flex-wrap justify-center lg:justify-start space-x-2">
+            <motion.div className="flex flex-wrap justify-center lg:justify-start space-x-2 font-neuroverse">
               {"NeuroVerse".split("").map((char, index) => (
                 <motion.span
                   key={index}
@@ -141,8 +203,30 @@ const Landing = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
-              No judgment, just understanding. NeuroVerse listens
+              {typedTitle}
             </motion.p>
+            <div className="flex flex-col justify-left items-start">
+              <div className="flex justify-center mb-2 mt-8">
+                <button onClick={handleClick} className="animated-button">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="arr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+                  </svg>
+                  <span className="text">Let's Chat</span>
+                  <span className="circle"></span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="arr-1"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="w-1/2 flex justify-center items-center hidden md:flex h-full">
@@ -160,70 +244,74 @@ const Landing = () => {
         </div>
       </section>
 
-      <div className="flex justify-center my-12">
-        <button onClick={handleClick} className="button">
-          <div className="state state--default">
-            <div className="icon">
-              <svg
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </div>
-            <p>
-              {"Let's chat".split(" ").map((char, index) => (
-                <span
-                  key={index}
-                  style={{
-                    "--i": index,
-                    marginRight: index === 0 ? "0" : "8px",
-                  }}
-                >
-                  {char}
-                </span>
-              ))}
-            </p>
-          </div>
-          <div className="state state--sent">
-            <div className="icon">
-              <svg
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-                stroke="currentColor"
-                strokeWidth="2"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 13l4 4L19 7"></path>
-              </svg>
-            </div>
-            <p>
-              {"Be happy..".split("").map((char, index) => (
-                <span key={index} style={{ "--i": index, marginRight: "4px" }}>
-                  {char}
-                </span>
-              ))}
-            </p>
-          </div>
-          <div className="outline"></div>
-        </button>
-      </div>
+      <section className="px-6 font-orbitron">
+        <div className="container mx-auto py-16">
+          <h2 className="text-4xl font-extrabold text-center mb-12 text-[#112D4E]">
+            Our Key Features
+          </h2>
 
-      <section className="px-6 mb-10">
-        <Features />
+          <div className="flex flex-col md:flex-row gap-6">
+            {features.map((feature, index) => {
+              const isExpanded = expandedIndex === index;
+
+              return (
+                <motion.div
+                  key={index}
+                  className="group py-12 h-[350px] relative cursor-pointer overflow-hidden rounded-xl shadow-lg flex flex-col justify-center items-center"
+                  style={{
+                    backgroundColor: feature.bgColor,
+                    flex: isExpanded ? 2 : 1,
+                  }}
+                  initial={{ flex: 1 }}
+                  animate={{ flex: isExpanded ? 2 : 1 }}
+                  transition={{ duration: 0.4 }}
+                  onClick={() => setExpandedIndex(isExpanded ? null : index)}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                  <motion.div
+                    className="mb-4 flex justify-center"
+                    initial={{ scale: 1 }}
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <feature.icon
+                      className={`w-16 h-16 ${feature.textColor}`}
+                    />
+                  </motion.div>
+
+                  <h3 className="text-3xl font-bold text-center text-[#bedaff] transition-colors duration-300 group-hover:text-yellow-200">
+                    {feature.title}
+                  </h3>
+                  {!isExpanded && (
+                    <motion.p
+                      className="text-center opacity-100 text-2xl text-white px-6 pt-6 font-smooch"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      {feature.description}
+                    </motion.p>
+                  )}
+
+                  {isExpanded && (
+                    <motion.p
+                      className="text-center text-2xl opacity-100 text-white px-6 pb-6 font-smooch"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      {feature.detdesc}
+                    </motion.p>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
       </section>
 
-      <footer className="bg-[#ba5b38] text-white py-4">
+      <footer className="bg-[#213555] text-white py-4">
         <div className="container mx-auto px-4 text-center font-medium">
           <p>Made with ❤️ by Bug Slayers</p>
         </div>
@@ -253,7 +341,7 @@ const Landing = () => {
             0% 75%,
             0% 25%
           );
-          background: #e6e4da82;
+          background: rgba(80, 80, 78, 0.93);
           transition: background-color 0.3s ease;
         }
 
@@ -276,341 +364,92 @@ const Landing = () => {
           }
         }
 
-        .button {
-          --primary: #ffffff;
-          --neutral-1: #ba5b38;
-          --neutral-2: rgb(236, 153, 71);
-          --radius: 14px;
-          --bg-color: #ba5b38;
-
-          background-color: var(--bg-color);
-          color: var(--primary);
-          cursor: pointer;
-          border-radius: var(--radius);
-          text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-          border: none;
-          box-shadow: 0 0.5px 0.5px 1px rgba(255, 255, 255, 0.2),
-            0 10px 20px rgba(0, 0, 0, 0.2), 0 4px 5px 0px rgba(0, 0, 0, 0.05);
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .animated-button {
           position: relative;
-          transition: all 0.3s ease;
-          min-width: 200px;
-          padding: 20px;
-          height: 68px;
-          font-family: "Galano Grotesque", Poppins, Montserrat, sans-serif;
-          font-style: normal;
-          font-size: 18px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 16px 36px;
+          border: 4px solid;
+          border-color: transparent;
+          font-size: 24px;
+          background-color: inherit;
+          border-radius: 20px;
           font-weight: 600;
-        }
-
-        .button:hover {
-          transform: scale(1.1);
-          box-shadow: 0 0 1px 2px rgba(255, 255, 255, 0.3),
-            0 15px 30px rgba(0, 0, 0, 0.3), 0 10px 3px -3px rgba(0, 0, 0, 0.04);
-        }
-
-        .button:active {
-          transform: scale(1);
-          box-shadow: 0 0 1px 2px rgba(249, 236, 166, 0.3),
-            0 10px 3px -3px rgba(0, 0, 0, 0.2);
-        }
-
-        .button:after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: var(--radius);
-          background: linear-gradient(var(--neutral-1), var(--neutral-2))
-              padding-box,
-            linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.45))
-              border-box;
-          z-index: 0;
-          transition: all 0.4s ease;
-        }
-
-        .button:hover::after {
-          transform: scale(1.05, 1.1);
-          box-shadow: inset 0 -1px 3px 0 rgba(249, 236, 166, 0.3);
-        }
-
-        .button::before {
-          content: "";
-          inset: 7px 6px 6px 6px;
-          position: absolute;
-          background: linear-gradient(
-            to top,
-            var(--neutral-1),
-            var(--neutral-2)
-          );
-          border-radius: 30px;
-          filter: blur(0.5px);
-          z-index: 2;
-        }
-
-        .state p {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .state .icon {
-          position: absolute;
-          left: 0;
-          top: 0;
-          bottom: 0;
-          margin: auto;
-          transform: scale(1.25);
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .state .icon svg {
-          color: white;
-          overflow: visible;
-        }
-
-        /* Outline */
-        .outline {
-          position: absolute;
-          border-radius: inherit;
+          color: #112d4e;
+          box-shadow: 0 0 0 2px #112d4e;
+          cursor: pointer;
           overflow: hidden;
-          z-index: 1;
-          opacity: 0;
-          transition: opacity 0.4s ease;
-          inset: -2px -3.5px;
+          transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .outline::before {
-          content: "";
+        .animated-button svg {
           position: absolute;
-          inset: -100%;
-          background: conic-gradient(
-            from 180deg,
-            transparent 60%,
-            white 80%,
-            transparent 100%
-          );
-          animation: spin 2s linear infinite;
-          animation-play-state: paused;
+          width: 24px;
+          fill: #112d4e;
+          z-index: 9;
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .button:hover .outline::before {
-          animation-play-state: running;
+        .animated-button .arr-1 {
+          right: 16px;
         }
 
-        /* Letters */
-        .state p span {
-          display: block;
-          opacity: 0;
-          animation: slideDown 0.8s ease forwards calc(var(--i) * 0.03s);
+        .animated-button .arr-2 {
+          left: -25%;
         }
 
-        .button:hover p span {
-          opacity: 1;
-          animation: wave 0.5s ease forwards calc(var(--i) * 0.02s);
-        }
-
-        .button:focus p span {
-          opacity: 1;
-          animation: disapear 0.6s ease forwards calc(var(--i) * 0.03s);
-        }
-
-        @keyframes wave {
-          30% {
-            opacity: 1;
-            transform: translateY(4px) translateX(0) rotate(0);
-          }
-          50% {
-            opacity: 1;
-            transform: translateY(-3px) translateX(0) rotate(0);
-            color: var(--primary);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0) translateX(0) rotate(0);
-          }
-        }
-
-        @keyframes slideDown {
-          0% {
-            opacity: 0;
-            transform: translateY(-20px) translateX(5px) rotate(-90deg);
-            color: var(--primary);
-            filter: blur(5px);
-          }
-          30% {
-            opacity: 1;
-            transform: translateY(4px) translateX(0) rotate(0);
-            filter: blur(0);
-          }
-          50% {
-            opacity: 1;
-            transform: translateY(-3px) translateX(0) rotate(0);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0) translateX(0) rotate(0);
-          }
-        }
-
-        @keyframes disapear {
-          from {
-            opacity: 1;
-          }
-          to {
-            opacity: 0;
-            transform: translateX(5px) translateY(20px);
-            color: var(--primary);
-            filter: blur(5px);
-          }
-        }
-
-        /* Plane */
-        .state--default .icon svg {
-          animation: land 0.6s ease forwards;
-        }
-
-        .button:hover .state--default .icon {
-          transform: rotate(45deg) scale(1.25);
-        }
-
-        .button:focus .state--default svg {
-          animation: takeOff 0.8s linear forwards;
-        }
-
-        .button:focus .state--default .icon {
-          transform: rotate(0) scale(1.25);
-        }
-
-        @keyframes takeOff {
-          0% {
-            opacity: 1;
-          }
-          60% {
-            opacity: 1;
-            transform: translateX(70px) rotate(45deg) scale(2);
-          }
-          100% {
-            opacity: 0;
-            transform: translateX(160px) rotate(45deg) scale(0);
-          }
-        }
-
-        @keyframes land {
-          0% {
-            transform: translateX(-60px) translateY(30px) rotate(-50deg)
-              scale(2);
-            opacity: 0;
-            filter: blur(3px);
-          }
-          100% {
-            transform: translateX(0) translateY(0) rotate(0);
-            opacity: 1;
-            filter: blur(0);
-          }
-        }
-
-        /* Contrail */
-        .state--default .icon:before {
-          content: "";
+        .animated-button .circle {
           position: absolute;
           top: 50%;
-          height: 2px;
-          width: 0;
-          left: -5px;
-          background: linear-gradient(
-            to right,
-            transparent,
-            rgba(0, 0, 0, 0.5)
-          );
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 20px;
+          height: 20px;
+          background-color: #112d4e;
+          border-radius: 50%;
+          opacity: 0;
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .button:focus .state--default .icon:before {
-          animation: contrail 0.8s linear forwards;
-        }
-
-        @keyframes contrail {
-          0% {
-            width: 0;
-            opacity: 1;
-          }
-          8% {
-            width: 15px;
-          }
-          60% {
-            opacity: 0.7;
-            width: 80px;
-          }
-          100% {
-            opacity: 0;
-            width: 160px;
-          }
-        }
-
-        /* States */
-        .state {
-          padding-left: 29px;
-          z-index: 2;
-          display: flex;
+        .animated-button .text {
           position: relative;
+          z-index: 1;
+          transform: translateX(-12px);
+          transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        .state--default span:nth-child(4) {
-          margin-right: 5px;
+        .animated-button:hover {
+          box-shadow: 0 0 0 12px transparent;
+          color: #ffffff;
+          border-radius: 12px;
         }
 
-        .state--sent {
-          display: none;
+        .animated-button:hover .arr-1 {
+          right: -25%;
         }
 
-        .state--sent svg {
-          transform: scale(1.25);
-          margin-right: 8px;
+        .animated-button:hover .arr-2 {
+          left: 16px;
         }
 
-        .button:focus .state--default {
-          position: absolute;
+        .animated-button:hover .text {
+          transform: translateX(12px);
         }
 
-        .button:focus .state--sent {
-          display: flex;
+        .animated-button:hover svg {
+          fill: #ffffff;
         }
 
-        .button:focus .state--sent span {
-          opacity: 0;
-          animation: slideDown 0.8s ease forwards calc(var(--i) * 0.2s);
+        .animated-button:active {
+          scale: 0.95;
+          box-shadow: 0 0 0 4px #112d4e;
         }
 
-        .button:focus .state--sent .icon svg {
-          opacity: 0;
-          animation: appear 1.2s ease forwards 0.8s;
-        }
-
-        @keyframes appear {
-          0% {
-            opacity: 0;
-            transform: scale(4) rotate(-40deg);
-            color: var(--primary);
-            filter: blur(4px);
-          }
-          30% {
-            opacity: 1;
-            transform: scale(0.6);
-            filter: blur(1px);
-          }
-          50% {
-            opacity: 1;
-            transform: scale(1.2);
-            filter: blur(0);
-          }
-          100% {
-            opacity: 1;
-            transform: scale(1);
-          }
+        .animated-button:hover .circle {
+          width: 220px;
+          height: 220px;
+          opacity: 1;
         }
       `}</style>
     </div>
