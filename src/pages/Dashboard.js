@@ -92,6 +92,7 @@ const ScatteringLetter = ({ children, index, onComplete }) => {
       style={{
         display: "inline-block",
         pointerEvents: "none",
+        marginRight: "0.25rem",
       }}
     >
       {children}
@@ -153,10 +154,8 @@ const Dashboard = () => {
         setRecordingComplete(true);
         const blob = new Blob(audioChunksRef.current, { type: "audio/wav" });
         setAudioBlob(blob);
-        setInputText("Please tell"); // Set text to "Please tell" when recording stops
-
-        // Directly send the message when recording is stopped
-        handleSend({ type: "click" }); // Trigger click event to send message
+        setInputText("Please tell"); 
+        handleSend({ type: "click" }); 
       };
 
       mediaRecorderRef.current.start();
@@ -313,7 +312,7 @@ const Dashboard = () => {
               >
                 {isScattering ? (
                   <div
-                    className="text-4xl font-bold text-gray-700 mb-4"
+                    className="text-4xl font-bold text-gray-700 mb-4 font-dancing"
                     style={{
                       overflow: "hidden",
                       pointerEvents: "none",

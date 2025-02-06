@@ -39,3 +39,24 @@ body {
 .row:nth-child(even) {
   margin-left: calc(var(--v1) * 0.52);
 }
+
+::-webkit-scrollbar {
+  width: 12px; 
+  height: 12px; 
+}
+
+::-webkit-scrollbar-track {
+  background-color: #ffffff; 
+  border-radius: 10px; 
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ba5b38; 
+  border-radius: 5px; 
+  border: 0.5px solid #eff1f5; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ff9e3d;
+}
+
