@@ -2,8 +2,8 @@
 
 <h1>NeuroVerse: The Future of Personalized Mental Health Support</h1>
 <p>Welcome to NeuroVerse, an innovative AR/VR-based virtual counseling system designed to provide immersive and personalized mental health support. By integrating AI-driven emotional analysis with virtual reality, NeuroVerse creates a safe and judgment-free space for individuals to express themselves and receive meaningful guidance. 🚀💙</p>
-
-<h4> <a href="https://github.com/vaibhavi0028/NeuroVerse/blob/main/README.md"> Documentation </a> <span> · </span> <a href="https://www.canva.com/design/DAGeEcmB3BE/wGImR-gWbLaexDG6kFeqqg/edit?utm_content=DAGeEcmB3BE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"> Presentation </a> </h4>
+neuroverse.vercel.app
+<h4><a href="neuroverse.vercel.app"> Website </a> <span> · </span>  <a href="https://github.com/vaibhavi0028/NeuroVerse/blob/main/README.md"> Documentation </a> <span> · </span> <a href="https://www.canva.com/design/DAGeEcmB3BE/wGImR-gWbLaexDG6kFeqqg/edit?utm_content=DAGeEcmB3BE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"> Presentation </a> </h4>
 <br>
 </div>
 
