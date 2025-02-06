@@ -105,7 +105,7 @@ const Landing = () => {
                     className="hexagon"
                     animate={{
                       backgroundColor:
-                        distance < 200 ? "#ff9e3" : "#e6e4da82",
+                        distance < 200 ? "#f5891d" : "#e6e4da82",
                     }}
                     transition={{ duration: 0.1 }}
                   />

@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaMicrophone, FaPaperPlane, FaStop } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-// import ExpandIcon from "../assets/expand2.svg";
-// import CloseIcon from "../assets/expand1.svg";
+import { generateResponse } from "../components/ChatBot.ts";
 
 const Loader = () => {
   return (
@@ -55,7 +54,7 @@ const Waveform = ({ isRecording, small = false }) => {
           }}
           transition={{
             duration: 0.5,
-            repeat: Infinity,
+            repeat: Number.POSITIVE_INFINITY,
             repeatType: "reverse",
             delay: i * 0.05,
           }}
@@ -100,37 +99,87 @@ const ScatteringLetter = ({ children, index, onComplete }) => {
   );
 };
 
+const TypingMessage = ({ text, onComplete }) => {
+  const [displayText, setDisplayText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timer = setTimeout(() => {
+        setDisplayText((prev) => prev + text[currentIndex]);
+        setCurrentIndex(currentIndex + 1);
+      }, 50);
+      return () => clearTimeout(timer);
+    } else {
+      onComplete?.();
+    }
+  }, [currentIndex, text, onComplete]);
+
+  return <div>{displayText}</div>;
+};
+
 const Dashboard = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const [showWelcome, setShowWelcome] = useState(true);
   const [isScattering, setIsScattering] = useState(false);
-  // const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [, setLoadingMessageId] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [, setRecordingComplete] = useState(false);
-  const [audioBlob, setAudioBlob] = useState(null);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
+  const recognitionRef = useRef(null);
+  const [randomQuote, setRandomQuote] = useState(null);
 
-  const quote = {
-    text: "Owning our story and loving ourselves through that process is the bravest thing that we'll ever do.",
-    author: "Brené Brown",
-  };
-
-  const botResponses = [
-    "I'm here to help! What can I do for you?",
-    "That's interesting! Tell me more.",
-    "I understand. Let me assist you with that.",
+  const quotes = [
+    {
+      text: "Owning our story and loving ourselves through that process is the bravest thing that we'll ever do.",
+      author: "Brené Brown",
+    },
+    {
+      text: "The journey of healing begins with a single conversation. You're not alone.",
+      author: "NeuroVerse",
+    },
+    {
+      text: "Healing is not linear.",
+      author: "Unknown",
+    },
+    {
+      text: "Self-care is how you take your power back.",
+      author: "Lalah Delia",
+    },
+    {
+      text: "You are enough just as you are.",
+      author: "Meghan Markle",
+    },
+    {
+      text: "The greatest wealth is health.",
+      author: "Virgil",
+    },
+    {
+      text: "Health is not just about what you're eating. It's also about what you're thinking and saying.",
+      author: "Unknown",
+    },
+    {
+      text: "Take care of your body, it’s the only place you have to live.",
+      author: "Jim Rohn",
+    },
+    {
+      text: "The best way to predict your future is to create it.",
+      author: "Abraham Lincoln",
+    },
+    {
+      text: "Let your joy be in your journey, not in some distant goal.",
+      author: "Tim Cahill",
+    },
+    {
+      text: "Self-love is not selfish; you cannot truly love another until you know how to love yourself.",
+      author: "RuPaul",
+    },
+    {
+      text: "It’s not the load that breaks you, it’s the way you carry it.",
+      author: "Lou Holtz",
+    },
   ];
-
-  // const previousChats = [
-  //   "Previous conversation 1",
-  //   "Previous conversation 2",
-  //   "Previous conversation 3",
-  // ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -140,47 +189,64 @@ const Dashboard = () => {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    if ("webkitSpeechRecognition" in window) {
+      const SpeechRecognition = window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+
+      recognitionRef.current.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map((result) => result[0])
+          .map((result) => result.transcript)
+          .join("");
+
+        setInputText(transcript);
+      };
+
+      recognitionRef.current.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        stopRecording();
+      };
+
+      recognitionRef.current.onend = () => {
+        stopRecording();
+      };
+    } else {
+      console.error("Speech recognition not supported in this browser");
+    }
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
+
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
-      audioChunksRef.current = [];
-
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        audioChunksRef.current.push(event.data);
-      };
-
-      mediaRecorderRef.current.onstop = () => {
-        setRecordingComplete(true);
-        const blob = new Blob(audioChunksRef.current, { type: "audio/wav" });
-        setAudioBlob(blob);
-        setInputText("Please tell"); 
-        handleSend({ type: "click" }); 
-      };
-
-      mediaRecorderRef.current.start();
-      setIsRecording(true);
+      if (recognitionRef.current) {
+        recognitionRef.current.start();
+        setIsRecording(true);
+        setInputText("");
+      }
     } catch (error) {
-      console.error("Error accessing microphone:", error);
+      console.error("Error starting recording:", error);
     }
   };
 
   const stopRecording = () => {
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state === "recording"
-    ) {
-      mediaRecorderRef.current.stop();
-      mediaRecorderRef.current.stream
-        .getTracks()
-        .forEach((track) => track.stop());
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
       setIsRecording(false);
+      setRecordingComplete(true);
     }
   };
 
   const handleSend = async (e) => {
     if (e.key === "Enter" || e.type === "click") {
-      if (inputText.trim() || audioBlob) {
+      if (inputText.trim()) {
         if (showWelcome) {
           setIsScattering(true);
           setTimeout(() => {
@@ -192,7 +258,6 @@ const Dashboard = () => {
           addMessage();
         }
         setRecordingComplete(false);
-        setAudioBlob(null);
       }
     }
   };
@@ -207,13 +272,12 @@ const Dashboard = () => {
         id: userMessageId,
         text: inputText,
         sender: "user",
-        isAudio: audioBlob !== null,
-        audioBlob: audioBlob,
       },
     ]);
     setInputText("");
 
-    // Add temporary bot message with loading state
+    const response = generateResponse(inputText);
+
     setMessages((prev) => [
       ...prev,
       {
@@ -224,72 +288,61 @@ const Dashboard = () => {
       },
     ]);
 
-    // After 1 second, update the bot message with actual response
     setTimeout(() => {
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === botMessageId
             ? {
                 id: botMessageId,
-                text: botResponses[
-                  Math.floor(Math.random() * botResponses.length)
-                ],
+                text: response.text,
                 sender: "bot",
                 isLoading: false,
+                isTyping: true,
+                onComplete: () => {
+                  setMessages((prev) =>
+                    prev.map((msg) =>
+                      msg.id === botMessageId
+                        ? { ...msg, isTyping: false }
+                        : msg
+                    )
+                  );
+
+                  if (response.followUp) {
+                    const followUpId = botMessageId + 1;
+                    setTimeout(() => {
+                      setMessages((prev) => [
+                        ...prev,
+                        {
+                          id: followUpId,
+                          text: response.followUp,
+                          sender: "bot",
+                          isLoading: false,
+                          isTyping: true,
+                          onComplete: () => {
+                            setMessages((prev) =>
+                              prev.map((msg) =>
+                                msg.id === followUpId
+                                  ? { ...msg, isTyping: false }
+                                  : msg
+                              )
+                            );
+                          },
+                        },
+                      ]);
+                    }, 1000);
+                  }
+                },
               }
             : msg
         )
       );
-      setLoadingMessageId(null);
     }, 1000);
   };
-
+  useEffect(() => {
+    setRandomQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+  }, []);
   return (
     <div className="min-h-[calc(100vh-90px)] mt-[90px] bg-[#e6e4da82] flex flex-col items-center">
-      {/* <motion.div
-        initial={{ x: "-100%" }}
-        animate={{ x: sidebarOpen ? 0 : "-100%" }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="fixed top-[90px] left-0 w-64 h-full bg-[#eae8df] text-[#434037] z-50 p-4"
-      >
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Previous Chats</h2>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="text-[#434037] text-xl"
-          >
-            <img
-              src={CloseIcon}
-              alt="Close"
-              className="w-6 h-6 text-[#434037]"
-            />
-          </button>
-        </div>
-        {previousChats.map((chat, index) => (
-          <div
-            key={index}
-            className="p-2 hover:bg-gray-200 cursor-pointer rounded text-[#434037]"
-          >
-            {chat}
-          </div>
-        ))}
-      </motion.div>
-
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="absolute left-6 top-[100px] p-2 rounded-md text-[#434037]"
-      >
-        <img
-          src={ExpandIcon}
-          alt="Expand"
-          className="w-6 h-6 text-[#434037]"
-          style={{
-            filter:
-              "brightness(0) saturate(100%) invert(16%) sepia(6%) saturate(1000%) hue-rotate(0deg) brightness(90%) contrast(90%)",
-          }}
-        />
-      </button> */}
-
       <div className="w-full max-w-6xl flex flex-col h-[calc(100vh-90px)] pt-4 px-4">
         <div
           ref={messagesContainerRef}
@@ -308,7 +361,7 @@ const Dashboard = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
+                transition={{ duration: 1.1 }}
               >
                 {isScattering ? (
                   <div
@@ -318,7 +371,7 @@ const Dashboard = () => {
                       pointerEvents: "none",
                     }}
                   >
-                    {quote.text.split("").map((letter, index) => (
+                    {randomQuote.text.split("").map((letter, index) => (
                       <ScatteringLetter key={index} index={index}>
                         {letter}
                       </ScatteringLetter>
@@ -326,12 +379,16 @@ const Dashboard = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="text-6xl font-bold text-gray-700 mb-4 font-dancing">
-                      {quote.text}
-                    </div>
-                    <div className="text-2xl text-gray-500">
-                      - {quote.author}
-                    </div>
+                    {randomQuote && (
+                      <>
+                        <div className="text-6xl font-bold text-gray-700 mb-4 font-dancing">
+                          {randomQuote.text}
+                        </div>
+                        <div className="text-2xl text-gray-500">
+                          - {randomQuote.author}
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
               </motion.div>
@@ -358,7 +415,14 @@ const Dashboard = () => {
                       : "bg-[#fdfcfb] text-[#76746c]"
                   }`}
                 >
-                  {message.text}
+                  {message.isTyping ? (
+                    <TypingMessage
+                      text={message.text}
+                      onComplete={message.onComplete}
+                    />
+                  ) : (
+                    message.text
+                  )}
                 </div>
               )}
             </motion.div>
@@ -369,11 +433,9 @@ const Dashboard = () => {
           <button
             onClick={() => {
               if (isRecording) {
-                stopRecording(); 
-                setInputText("Please tell"); 
-                handleSend({ type: "click" }); 
+                stopRecording();
               } else {
-                startRecording(); 
+                startRecording();
               }
             }}
             className={`p-2 ${
@@ -397,7 +459,7 @@ const Dashboard = () => {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSend(e)}
-              placeholder="Type your message..."
+              placeholder="Share how you're feeling..."
               className="flex-1 outline-none text-xl bg-white p-2"
             />
           )}
