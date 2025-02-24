@@ -3,7 +3,7 @@
 <h1>NeuroVerse: No judgment, just understanding. NeuroVerse listens</h1>
 <p>Welcome to NeuroVerse, an innovative AR/VR-based virtual counseling system designed to provide immersive and personalized mental health support. By integrating AI-driven emotional analysis with virtual reality, NeuroVerse creates a safe and judgment-free space for individuals to express themselves and receive meaningful guidance. 🚀💙</p>
 
-<h4><a href="https://neuroverse.vercel.app/"> Website </a> <span> · </span>  <a href="https://github.com/vaibhavi0028/NeuroVerse/blob/main/README.md"> Documentation </a> <span> · </span> <a href="https://www.canva.com/design/DAGeEcmB3BE/wGImR-gWbLaexDG6kFeqqg/edit?utm_content=DAGeEcmB3BE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"> Presentation </a> </h4>
+<h4><a href="https://neuroverse.vercel.app/"> Website </a> <span> · </span>  <a href="https://github.com/vaibhavi0028/NeuroVerse/blob/main/README.md"> Documentation </a> <span> · </span> <a href="https://www.canva.com/design/DAGgAlPMIqU/1QlQIB-MrtD0v5LH3SClTA/edit?utm_content=DAGgAlPMIqU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"> Presentation </a> </h4>
 <br>
 </div>
 
